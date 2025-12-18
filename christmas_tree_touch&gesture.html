@@ -1,10 +1,4 @@
-<!--
-  - @Project: Grand Luxury Tree - Christmas Edition (Touch & Gesture & Stats)
-  - @Author: wp/electronicminer
-  - @Date: 2025-12-08
-  - @Description: 3D Christmas tree with AI Gestures + Touch + Traffic Analytics.
-  - @Style: Luxury Dashboard UI (Hidden by default, toggle with 'S')
--->
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -86,13 +80,7 @@
             gap: 10px; z-index: 20;
             transition: opacity 0.5s ease;
         }
-/* <!--
-  - @Project: Grand Luxury Tree - Christmas Edition (Touch & Gesture & Stats)
-  - @Author: wp/electronicminer
-  - @Date: 2025-12-08
-  - @Description: 3D Christmas tree with AI Gestures + Touch + Traffic Analytics.
-  - @Style: Luxury Dashboard UI (Hidden by default, toggle with 'S')
---> */
+
         .btn-group {
             display: flex; flex-direction: column; gap: 10px; align-items: flex-end;
         }
@@ -124,6 +112,11 @@
         }
 
         input[type="file"] { display: none; }
+
+        /* 移动端隐藏文件夹选择按钮 */
+        @media (max-width: 768px) {
+            .desktop-only { display: none; }
+        }
 
         /* Mode Buttons (Bottom) */
         #mode-bar {
@@ -172,13 +165,7 @@
             z-index: 200; text-align: center;
             display: none; border-radius: 8px; min-width: 200px;
         }
-/* <!--
-  - @Project: Grand Luxury Tree - Christmas Edition (Touch & Gesture & Stats)
-  - @Author: wp/electronicminer
-  - @Date: 2025-12-08
-  - @Description: 3D Christmas tree with AI Gestures + Touch + Traffic Analytics.
-  - @Style: Luxury Dashboard UI (Hidden by default, toggle with 'S')
---> */
+
         /* -------------------------------------------
            【全新升级】Luxury Stats Dashboard 样式
            ------------------------------------------- */
@@ -279,6 +266,11 @@
 </head>
 <body>
 
+    <!-- 背景音乐 -->
+    <audio id="bg-music" loop>
+        <source src="jingle-bells-445113.mp3" type="audio/mpeg">
+    </audio>
+
     <div id="loader">
         <div class="spinner"></div>
         <div class="loader-text">Loading Memories</div>
@@ -294,13 +286,13 @@
         <div class="controls-wrapper">
             <div class="btn-group">
                 <div class="control-btn" id="cam-btn">📷 Enable Gesture</div>
-                <label class="control-btn">
+                <label class="control-btn desktop-only">
                     Select Folder
                     <input type="file" id="folder-input" webkitdirectory directory multiple>
                 </label>
                 <label class="control-btn">
-                    Select Files
-                    <input type="file" id="file-input" multiple accept="image/*">
+                    Select Photos
+                    <input type="file" id="file-input" multiple accept="image/*" capture="environment">
                 </label>
             </div>
             <!-- 【修改】添加了 Press 'S' for Stats 的提示 -->
@@ -312,6 +304,7 @@
             <div class="mode-btn" onclick="setMode('TREE')" title="Tree Mode">🎄</div>
             <div class="mode-btn" onclick="setMode('SCATTER')" title="Scatter Mode">✨</div>
             <div class="mode-btn" onclick="setMode('FOCUS_RANDOM')" title="Focus Mode">🔍</div>
+            <div class="mode-btn" id="music-btn" onclick="toggleMusic()" title="Toggle Music">🔇</div>
         </div>
 
         <!-- 【美化版统计仪表盘】 -->
@@ -418,6 +411,27 @@
                 STATE.mode = mode;
                 if (mode === 'TREE') STATE.focusTarget = null;
             }
+        };
+
+        // 背景音乐控制
+        let isMusicPlaying = false;
+        const bgMusic = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-btn');
+
+        window.toggleMusic = () => {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                musicBtn.innerText = '🔇';
+                musicBtn.title = 'Play Music';
+            } else {
+                bgMusic.play().then(() => {
+                    musicBtn.innerText = '🔊';
+                    musicBtn.title = 'Pause Music';
+                }).catch(e => {
+                    console.warn('Music play failed:', e);
+                });
+            }
+            isMusicPlaying = !isMusicPlaying;
         };
 
         async function init() {
