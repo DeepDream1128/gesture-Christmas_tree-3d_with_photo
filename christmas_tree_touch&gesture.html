@@ -95,43 +95,45 @@
             50% { opacity: 1; filter: brightness(1.2); }
         }
 
-        /* Controls */
+        /* Controls - 左侧圆形按钮 */
         .controls-wrapper {
-            position: absolute; top: 100px; right: 20px;        
+            position: absolute; top: 50%; left: 20px;
+            transform: translateY(-50%);
             pointer-events: auto;
-            display: flex; flex-direction: column; align-items: flex-end;
-            gap: 10px; z-index: 20;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 15px; z-index: 20;
             transition: opacity 0.5s ease;
         }
 
         .btn-group {
-            display: flex; flex-direction: column; gap: 10px; align-items: flex-end;
+            display: flex; flex-direction: column; gap: 15px; align-items: center;
         }
 
         .control-btn {
-            background: rgba(20, 20, 20, 0.6); 
-            border: 1px solid rgba(212, 175, 55, 0.4); 
-            color: #d4af37; padding: 10px 20px; 
-            cursor: pointer; text-transform: uppercase; 
-            letter-spacing: 2px; font-size: 10px;
-            transition: all 0.4s;
+            width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            color: #d4af37;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
             display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(5px); min-width: 120px;
+            backdrop-filter: blur(5px);
+            padding: 0;
         }
-        
+
         .control-btn.active {
             background: rgba(212, 175, 55, 0.8); color: #000;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
         }
-        .control-btn:hover { 
-            background: #d4af37; color: #000; 
+        .control-btn:hover, .control-btn:active {
+            background: #d4af37; color: #000;
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            transform: scale(0.95);
         }
-        
+
         .hint-text {
-            color: rgba(212, 175, 55, 0.5); font-size: 9px;
-            letter-spacing: 1px; text-transform: uppercase;
-            text-align: right; margin-top: 5px; max-width: 200px;
+            display: none;
         }
 
         input[type="file"] { display: none; }
@@ -309,18 +311,16 @@
         
         <div class="controls-wrapper">
             <div class="btn-group">
-                <div class="control-btn" id="cam-btn">📷 Enable Gesture</div>
-                <label class="control-btn desktop-only">
-                    Select Folder
+                <div class="control-btn" id="cam-btn" title="Enable Gesture">👋</div>
+                <label class="control-btn desktop-only" title="Select Folder">
+                    📁
                     <input type="file" id="folder-input" webkitdirectory directory multiple>
                 </label>
-                <label class="control-btn">
-                    Select Photos
+                <label class="control-btn" title="Select Photos">
+                    🖼️
                     <input type="file" id="file-input" multiple accept="image/*">
                 </label>
             </div>
-            <!-- 【修改】添加了 Press 'S' for Stats 的提示 -->
-            <div class="hint-text">Touch: Drag | Click Photo | Press 'S' for Stats</div>
         </div>
 
         <!-- 触屏模式切换按钮 -->
@@ -864,7 +864,7 @@
 
         async function initMediaPipe() {
             if (isCameraRunning) return;
-            camBtn.innerText = "Initializing...";
+            camBtn.innerText = "⏳";
             debugInfo.innerText = "Loading AI models...";
             video = document.getElementById('webcam');
             try {
@@ -879,7 +879,7 @@
                 video.addEventListener("loadeddata", predictWebcam);
                 document.getElementById('webcam-wrapper').style.opacity = 1;
                 debugInfo.innerText = "Gesture Active: Show Hand";
-                camBtn.innerText = "Gesture Active";
+                camBtn.innerText = "✋";
                 camBtn.classList.add('active');
                 isCameraRunning = true;
             } catch(e) {
@@ -888,7 +888,7 @@
                 if (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError') msg = "Please allow camera access!";
                 else if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') msg = "HTTPS required for camera!";
                 debugInfo.innerText = msg; showMsg(msg);
-                camBtn.innerText = "Retry Camera";
+                camBtn.innerText = "❌";
             }
         }
 // <!--
